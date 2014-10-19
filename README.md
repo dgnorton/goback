@@ -8,7 +8,7 @@ Example
 
 ```
 func Bar(i *int) {
-	var txn goback.Transaction
+	txn := NewTransaction()
 	defer txn.Rollback()
 
 	old := *i
