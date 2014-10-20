@@ -3,19 +3,28 @@ goback
 
 A simple non-database related transaction library
 
+Typical use case
+================
+
+A function with a sequence of steps and if any of the steps fail all previous steps need to be reverted (e.g., variable values restored, file(s) deleted, etc.)
+
 Example
 =======
 
 ```
 func Bar(i *int) {
-	txn := goback.NewTransaction()
-	defer txn.Rollback()
+	tx := goback.Begin()
+	defer tx.Rollback()
 
 	old := *i
-	txn.Push(func() error {*i = old; return nil})
+	tx.Exec(func() error {*i = old; return nil})
 	*i = 42
+
+	err := fmt.Errorf("Forced error")
 	
-	//txn.Commit()
+	if err == nil {
+		tx.Commit()
+	}
 }
 
 func main() {
@@ -29,4 +38,4 @@ Prints...
 
 `10`
 
-...because the `txn.Commit()` line is commented out.
+...because the `txn.Commit()` line never executes.

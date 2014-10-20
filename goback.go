@@ -1,32 +1,26 @@
 package goback
 
-type TransactionFunc func() error
+type TxFunc func() error
 
-type Transaction struct {
-	stack []TransactionFunc
+type Tx struct {
+	stack []TxFunc
 	committed bool
 }
 
-func (t *Transaction) Push(f TransactionFunc) {
+func Begin() *Tx {
+	return &Tx{}
+}
+
+func (t *Tx) Exec(f TxFunc) {
 	t.stack = append(t.stack, f)
 }
 
-func (t *Transaction) Pop() TransactionFunc {
-	ubnd := len(t.stack) - 1
-	if ubnd < 0 {
-		return nil
-	}
-	fn := t.stack[ubnd]
-	t.stack = t.stack[:ubnd]
-	return fn
-}
-
-func (t *Transaction) Commit() {
+func (t *Tx) Commit() {
 	t.committed = true
 }
 
 // Rollback all acctions by calling all rollback functions.
-func (t *Transaction) Rollback() error {
+func (t *Tx) Rollback() error {
 	if t.committed {
 		return nil
 	}
