@@ -24,3 +24,9 @@ func main() {
 	fmt.Println(i)
 }
 ```
+
+Prints...
+
+`10`
+
+...because the `txn.Commit()` line is commented out.
