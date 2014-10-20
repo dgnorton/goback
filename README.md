@@ -38,4 +38,4 @@ Prints...
 
 `10`
 
-...because the `txn.Commit()` line never executes.
+...because the `tx.Commit()` line never executes.
